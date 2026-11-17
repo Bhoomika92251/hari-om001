@@ -13,7 +13,14 @@ build/
 .env
 .env.local
 .env.*.local
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+backend/.env
+backend/.env.local
 !.env.example
+!frontend/.env.example
+!backend/.env.example
 
 # OS and Editor files
 .DS_Store

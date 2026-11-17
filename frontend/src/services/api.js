@@ -4,7 +4,9 @@ import { exteriorsData } from '../data/exteriorsData';
 import { galleryData } from '../data/galleryData';
 import { aboutData } from '../data/aboutData';
 
-const API_BASE = '/api';
+// In development: Vite proxy forwards /api → http://localhost:5000
+// In production:  Uses VITE_API_BASE_URL from .env.production
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api';
 
 /**
  * Generic fetch wrapper with graceful offline fallback
