@@ -1,7 +1,12 @@
+import 'dotenv/config';
 import app from './src/app.js';
 import { config } from './src/config/index.js';
+import { connectDB } from './src/models/connection.js';
 
 const PORT = config.port;
+
+// Connect to MongoDB Atlas before starting the server
+await connectDB();
 
 const server = app.listen(PORT, () => {
   console.log(`
