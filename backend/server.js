@@ -5,8 +5,12 @@ import { connectDB } from './src/models/connection.js';
 
 const PORT = config.port;
 
-// Connect to MongoDB Atlas before starting the server
-await connectDB();
+// Try MongoDB — but NEVER crash if it fails
+try {
+  await connectDB();
+} catch (err) {
+  console.warn('⚠️  DB init warning:', err.message);
+}
 
 const server = app.listen(PORT, () => {
   console.log(`
@@ -15,12 +19,17 @@ const server = app.listen(PORT, () => {
 ║   🏛️  DreamSpace Atelier — Backend REST API is LIVE          ║
 ║                                                               ║
 ║   Port:         ${PORT}                                          ║
-║   Environment:  ${config.nodeEnv}                                   ║
-║   API Base:     http://localhost:${PORT}/api                      ║
-║   Health Check: http://localhost:${PORT}/api/health               ║
+║   Environment:  ${config.nodeEnv}                             ║
+║   API Base:     http://localhost:${PORT}/api                  ║
+║   Health Check: http://localhost:${PORT}/api/health           ║
 ║                                                               ║
 ╚═══════════════════════════════════════════════════════════════╝
   `);
+});
+
+server.on('error', (err) => {
+  console.error('❌ Server error:', err.message);
+  process.exit(1);
 });
 
 // Graceful Shutdown
@@ -31,7 +40,6 @@ function handleShutdown(signal) {
     process.exit(0);
   });
 
-  // Force shutdown if taking longer than 5 seconds
   setTimeout(() => {
     console.error('[Server] Forced shutdown after timeout.');
     process.exit(1);
@@ -42,4 +50,3 @@ process.on('SIGINT', () => handleShutdown('SIGINT'));
 process.on('SIGTERM', () => handleShutdown('SIGTERM'));
 
 export default server;
-
